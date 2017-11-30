@@ -4,11 +4,12 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
 endif()
 
 include(vcpkg_common_functions)
-set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/ffmpeg-3.3.3)
+set(VERSION 3.4)
+set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/ffmpeg-${VERSION})
 vcpkg_download_distfile(ARCHIVE
-    URLS "http://ffmpeg.org/releases/ffmpeg-3.3.3.tar.bz2"
-    FILENAME "ffmpeg-3.3.3.tar.bz2"
-    SHA512  1cc63bf73356f4e618c0d3572a216bdf5689f10deff56b4262f6d740b0bee5a4b3eac234f45fca3d4d2da77903a507b4fba725b76d2d2070f31b6dae9e7a2dab
+    URLS "http://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.bz2"
+    FILENAME "ffmpeg-${VERSION}.tar.bz2"
+    SHA512  43a8825140efdd41e2dd53fb0475adeb74e003842690cbc189aea0f1af696eec675951db30f9742d063f4e31ae6883256bdceaf2cc73d1dab0d144f72a0741e0
 )
 vcpkg_extract_source_archive(${ARCHIVE})
 vcpkg_apply_patches(
@@ -16,14 +17,13 @@ vcpkg_apply_patches(
     PATCHES ${CMAKE_CURRENT_LIST_DIR}/detect-openssl.patch
 )
 
-vcpkg_find_acquire_program(YASM)
-get_filename_component(YASM_EXE_PATH ${YASM} DIRECTORY)
-set(ENV{PATH} "$ENV{PATH};${YASM_EXE_PATH}")
+vcpkg_find_acquire_program(NASM)
+get_filename_component(NASM_EXE_PATH ${NASM} DIRECTORY)
+set(ENV{PATH} "$ENV{PATH};${NASM_EXE_PATH}")
 
 vcpkg_acquire_msys(MSYS_ROOT)
 set(BASH ${MSYS_ROOT}/usr/bin/bash.exe)
 set(ENV{INCLUDE} "${CURRENT_INSTALLED_DIR}/include;$ENV{INCLUDE}")
-set(ENV{LIB} "${CURRENT_INSTALLED_DIR}/lib;$ENV{LIB}")
 
 set(_csc_PROJECT_PATH ffmpeg)
 
@@ -83,7 +83,9 @@ else()
     set(OPTIONS_RELEASE "${OPTIONS_RELEASE} --extra-cflags=-MT --extra-cxxflags=-MT")
 endif()
 
+set(BASE_LIB_ENV "$ENV{LIB}")
 message(STATUS "Building ${_csc_PROJECT_PATH} for Release")
+set(ENV{LIB} "${CURRENT_INSTALLED_DIR}/lib;${BASE_LIB_ENV}")
 file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel)
 vcpkg_execute_required_process(
     COMMAND ${BASH} --noprofile --norc "${CMAKE_CURRENT_LIST_DIR}\\build.sh"
@@ -96,6 +98,7 @@ vcpkg_execute_required_process(
 )
 
 message(STATUS "Building ${_csc_PROJECT_PATH} for Debug")
+set(ENV{LIB} "${CURRENT_INSTALLED_DIR}/debug/lib;${BASE_LIB_ENV}")
 file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg)
 vcpkg_execute_required_process(
     COMMAND ${BASH} --noprofile --norc "${CMAKE_CURRENT_LIST_DIR}\\build.sh"

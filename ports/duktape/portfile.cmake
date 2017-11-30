@@ -1,10 +1,10 @@
 include(vcpkg_common_functions)
-set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/duktape-2.0.3)
-set(CMAKE_PATH ${CMAKE_CURRENT_LIST_DIR})
+set(VERSION 2.2.0)
+set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/duktape-${VERSION})
 vcpkg_download_distfile(ARCHIVE_FILE
-    URLS "https://github.com/svaarala/duktape/releases/download/v2.0.3/duktape-2.0.3.tar.xz"
-    FILENAME "duktape-2.0.3.tar.xz"
-    SHA512 ba21731242d953d82c677e1205e3596e270e6d57156a0bca8068fc3b6a35996af69bcfac979b871a7e3eab31f28a06cb99078f0b3eaac54be9c5899f57f4100e
+    URLS "https://github.com/svaarala/duktape/releases/download/v${VERSION}/duktape-${VERSION}.tar.xz"
+    FILENAME "duktape-${VERSION}.tar.xz"
+    SHA512 6fe67660ad4cfbab37b9048840bd8c42ee9585441c17253e1f17cb06e4527d1413851bc167d8b013990d5cae9f8e6eb4cb6ff80866f55bd8d67b0cf47580be7c
 )
 vcpkg_extract_source_archive(${ARCHIVE_FILE})
 
@@ -14,7 +14,8 @@ vcpkg_apply_patches(
 )
 
 vcpkg_configure_cmake(
-    SOURCE_PATH ${CMAKE_PATH}
+    SOURCE_PATH ${CMAKE_CURRENT_LIST_DIR}
+    PREFER_NINJA
     OPTIONS -DSOURCE_PATH=${SOURCE_PATH}
 )
 
@@ -22,7 +23,7 @@ vcpkg_install_cmake()
 
 set(DUK_CONFIG_H_PATH "${CURRENT_PACKAGES_DIR}/include/duk_config.h")
 file(READ ${DUK_CONFIG_H_PATH} CONTENT)
-if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
     string(REPLACE "// #undef DUK_F_DLL_BUILD" "#undef DUK_F_DLL_BUILD\n#define DUK_F_DLL_BUILD 1" CONTENT "${CONTENT}")
 else()
     string(REPLACE "// #undef DUK_F_DLL_BUILD" "#undef DUK_F_DLL_BUILD\n#define DUK_F_DLL_BUILD 0" CONTENT "${CONTENT}")

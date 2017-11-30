@@ -1,14 +1,16 @@
 include(vcpkg_common_functions)
-set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/bullet3-2.86.1)
-vcpkg_download_distfile(ARCHIVE
-    URLS "https://github.com/bulletphysics/bullet3/archive/2.86.1.zip"
-    FILENAME "bullet3-2.86.1.zip"
-    SHA512 96c67bed63db4b7d46196cebda57b80543ea37bd19f013adcfe19ee6c2c3319ed007bcd1ebbe345d8c75b7e80588f4a7d85cb6a07e1a5eea759d97ce4d94f972
+
+vcpkg_from_github(
+    OUT_SOURCE_PATH SOURCE_PATH
+    REPO bulletphysics/bullet3
+    REF 2.87
+    SHA512 649e470223295666eda6f7ff59d03097637c2645b5cd951977060ae14b89f56948ce03e437e83c986d26876f187d7ee34e790bc3882d5d66da9af89a4ab81c21
+    HEAD_REF master
 )
-vcpkg_extract_source_archive(${ARCHIVE})
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON
         -DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON
@@ -22,11 +24,15 @@ vcpkg_configure_cmake(
         -DINSTALL_LIBS=ON
 )
 
-vcpkg_build_cmake()
 vcpkg_install_cmake()
 
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/lib/cmake)
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/lib/cmake)
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake)
+
+file(GLOB HAS_FILES ${CURRENT_PACKAGES_DIR}/include/bullet/BulletInverseDynamics/details/*)
+if(NOT HAS_FILES)
+    file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/include/bullet/BulletInverseDynamics/details/*)
+endif()
+
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 file(COPY ${SOURCE_PATH}/LICENSE.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/bullet3)

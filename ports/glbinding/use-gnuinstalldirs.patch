@@ -1,0 +1,27 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0a32cd7..92e30f0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -125,7 +125,21 @@ if("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr" OR "${CMAKE_INSTALL_PREFIX}" STREQU
+ endif()
+ 
+ # Installation paths
+-if(UNIX AND SYSTEM_DIR_INSTALL)
++if(USE_GNUINSTALLDIRS)
++    include(GNUInstallDirs)
++    set(INSTALL_ROOT      ".")
++    set(INSTALL_CMAKE     "cmake")
++    set(INSTALL_EXAMPLES  "${CMAKE_INSTALL_BINDIR}")
++    set(INSTALL_DATA      "${CMAKE_INSTALL_DATADIR}/${project}")
++    set(INSTALL_BIN       "${CMAKE_INSTALL_BINDIR}")
++    set(INSTALL_SHARED    "${CMAKE_INSTALL_LIBDIR}")
++    set(INSTALL_LIB       "${CMAKE_INSTALL_LIBDIR}")
++    set(INSTALL_INCLUDE   "${CMAKE_INSTALL_INCLUDEDIR}")
++    set(INSTALL_DOC       "${CMAKE_INSTALL_DOCDIR}")
++    set(INSTALL_SHORTCUTS "misc")
++    set(INSTALL_ICONS     "misc")
++    set(INSTALL_INIT      "misc")
++elseif(UNIX AND SYSTEM_DIR_INSTALL)
+     # Install into the system (/usr/bin or /usr/local/bin)
+     set(INSTALL_ROOT      "share/${project}")       # /usr/[local]/share/<project>
+     set(INSTALL_CMAKE     "share/${project}/cmake") # /usr/[local]/share/<project>/cmake

@@ -36,44 +36,11 @@ set(GLIB_LIBRARIES ${GLIB_GLIB_LIBRARY} ${GLIB_GOBJECT_LIBRARY} ${GLIB_GMODULE_L
 find_path(LIBINTL_INCLUDE_DIR libintl.h)
 find_library(LIBINTL_LIBRARY NAMES libintl intl)
 
-set(ATK_SOURCES
-    atk/atkaction.c
-    atk/atkcomponent.c
-    atk/atkdocument.c
-    atk/atkeditabletext.c
-    atk/atkgobjectaccessible.c
-    atk/atkhyperlink.c
-    atk/atkhyperlinkimpl.c
-    atk/atkhypertext.c
-    atk/atkimage.c
-    atk/atknoopobject.c
-    atk/atknoopobjectfactory.c
-    atk/atkobject.c
-    atk/atkobjectfactory.c
-    atk/atkplug.c
-    atk/atkprivate.c
-    atk/atkrange.c
-    atk/atkregistry.c
-    atk/atkrelation.c
-    atk/atkrelationset.c
-    atk/atkselection.c
-    atk/atksocket.c
-    atk/atkstate.c
-    atk/atkstateset.c
-    atk/atkstreamablecontent.c
-    atk/atktable.c
-    atk/atktablecell.c
-    atk/atktext.c
-    atk/atkutil.c
-    atk/atkmisc.c
-    atk/atkvalue.c
-    atk/atkversion.c
-    atk/atkwindow.c
-    atk/atk-enum-types.c)
+file(GLOB ATK_SOURCES atk/*.c)
 
 add_library(atk ${ATK_SOURCES})
 target_compile_definitions(atk PRIVATE ATK_COMPILATION ${ATK_EXPORT_MACRO} G_DISABLE_SINGLE_INCLUDES ATK_LOCALEDIR="/dummy/share/locale")
-target_link_libraries(atk ${LIBINTL_LIBRARY} ${GLIB_LIBRARIES})
+target_link_libraries(atk PRIVATE ${LIBINTL_LIBRARY} ${GLIB_LIBRARIES})
 target_include_directories(atk PRIVATE ${GLIB_INCLUDE_DIR} ${LIBINTL_INCLUDE_DIR})
 
 set_target_properties(atk PROPERTIES 
@@ -83,43 +50,8 @@ set_target_properties(atk PROPERTIES
 install(TARGETS atk RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
 
 if(NOT ATK_SKIP_HEADERS)
-    install(FILES
-        atk/atk.h
-        atk/atkaction.h
-        atk/atkcomponent.h
-        atk/atkdocument.h
-        atk/atkeditabletext.h
-        atk/atkgobjectaccessible.h
-        atk/atkhyperlink.h
-        atk/atkhyperlinkimpl.h
-        atk/atkhypertext.h
-        atk/atknoopobject.h
-        atk/atknoopobjectfactory.h
-        atk/atkobject.h
-        atk/atkobjectfactory.h
-        atk/atkplug.h
-        atk/atkimage.h
-        atk/atkrange.h
-        atk/atkregistry.h
-        atk/atkrelation.h
-        atk/atkrelationtype.h
-        atk/atkrelationset.h
-        atk/atkselection.h
-        atk/atksocket.h
-        atk/atkstate.h
-        atk/atkstateset.h
-        atk/atkstreamablecontent.h
-        atk/atktable.h
-        atk/atktablecell.h
-        atk/atktext.h
-        atk/atkutil.h
-        atk/atkmisc.h
-        atk/atkvalue.h
-        atk/atkwindow.h
-        atk/atkversion.h
-        atk/atk-enum-types.h
-        atk/atkversion.h
-        DESTINATION include/atk)
+    file(GLOB HEADERS atk/*.h)
+    install(FILES ${HEADERS} DESTINATION include/atk)
 endif()
 
 message(STATUS "Link-time dependencies:")

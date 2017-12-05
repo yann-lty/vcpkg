@@ -1,4 +1,4 @@
 Source: beast
-Version: v84-1
-Build-Depends: boost
+Version: v84-2
+Build-Depends: boost-asio, boost-assert, boost-config, boost-container, boost-core, boost-endian, boost-intrusive, boost-optional, boost-smart-ptr, boost-static-assert, boost-system, boost-throw-exception, boost-type-traits, boost-utility, boost-winapi
 Description: HTTP/1 and WebSocket, header-only using Boost.Asio and C++11

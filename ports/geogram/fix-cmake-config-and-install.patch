@@ -130,7 +130,7 @@ diff --git a/src/lib/third_party/numerics/CMakeLists.txt b/src/lib/third_party/n
 index 5789cd2..e4262e3 100644
 --- a/src/lib/third_party/numerics/CMakeLists.txt
 +++ b/src/lib/third_party/numerics/CMakeLists.txt
-@@ -10,16 +10,18 @@ endif()
+@@ -10,16 +10,19 @@ endif()
  
  include_directories(${GEOGRAM_SOURCE_DIR}/src/lib/third_party/numerics/INCLUDE)
  
